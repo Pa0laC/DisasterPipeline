@@ -1,15 +1,11 @@
 import sys
 import pandas as pd
 import pickle
+import joblib
+from sqlalchemy import create_engine, inspect, text
 import re
 
-import nltk
-nltk.download(['punkt','wordnet', 'stopwords'])
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem.wordnet import WordNetLemmatizer
-
-from sqlalchemy import create_engine, inspect, text
+from custom_token_function import tokenize
 
 from sklearn.pipeline import Pipeline
 from sklearn.multioutput import MultiOutputClassifier
@@ -17,6 +13,7 @@ from sklearn.metrics import f1_score, classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
 
 def load_data(database_filepath):
     '''
@@ -51,31 +48,20 @@ def load_data(database_filepath):
 
 
 
-def tokenize(text):
-    '''
-    Process the text data by normalizing it, and removing punctuation
-    '''
-    #Normalize the text and remove punctuation
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-    words = word_tokenize(text)
-    lemmed = [WordNetLemmatizer().lemmatize(w) for w in words if w not in stopwords.words("english")]
-    return lemmed
-
-
 def build_model():
     '''
     Build model pipeline and split data into training and test dataset
     '''
     
     pipeline = Pipeline([('vect', CountVectorizer(tokenizer=tokenize)),
-                     ('tfidf', TfidfTransformer()),
-                     ('classifier', MultiOutputClassifier(RandomForestClassifier()))])
+                         ('tfidf', TfidfTransformer()),
+                         ('classifier', MultiOutputClassifier(RandomForestClassifier()))])
     
     # Grid search to optimize hyperparameters
-    parameters = parameters = {'classifier__estimator__n_estimators': [50,100],
-                               'classifier__estimator__max_depth': [None, 5],}
+    parameters = parameters = {'classifier__estimator__n_estimators': [5],
+                               'classifier__estimator__max_depth': [5],}
 
-    cv = GridSearchCV(pipeline, param_grid=parameters, n_jobs=10)
+    cv = GridSearchCV(pipeline, param_grid=parameters, cv=2)
     
     return cv
 
@@ -87,7 +73,13 @@ def evaluate_model(model, X_test, Y_test, category_names):
     y_pred = model.predict(X_test)
     output = {}
     for i in range(len(category_names)):
-        output[category_names[i]] =  classification_report(y_pred[i], Y_test.iloc[i])
+        report= classification_report(y_pred[i], Y_test.iloc[i], output_dict=True)
+
+        precision = report['weighted avg']['precision']
+        recall = report['weighted avg']['recall']
+        f1_score = report['weighted avg']['f1-score']
+
+        output[category_names[i]] =  {'precision':precision,'recall': recall, 'f1':f1_score}
     return output
 
 
@@ -96,8 +88,7 @@ def save_model(model, model_filepath):
     Save model in pickle file for later use
     '''
     # save the model as a pickle file
-    with open(model_filepath, 'wb') as f:
-        pickle.dump(model, f)
+    joblib.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
@@ -129,6 +120,7 @@ def main():
               'as the first argument and the filepath of the pickle file to '\
               'save the model to as the second argument. \n\nExample: python '\
               'train_classifier.py ../data/DisasterResponse.db classifier.pkl')
+
 
 
 if __name__ == '__main__':
