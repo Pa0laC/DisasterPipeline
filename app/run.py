@@ -18,7 +18,7 @@ from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-
+#app.run(debug=True, port=3000)
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterTable', engine)
@@ -33,12 +33,16 @@ model = joblib.load("../models/classifier.pkl")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
+    # first visual
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    #second visualisation
+    df_categories= df.drop(columns=['id','message', 'original', 'genre',])
+    top_5_count = df_categories.sum().sort_values(ascending=False)[:5]
+    top_5_name = top_5_count.index
+    
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
@@ -55,6 +59,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+                {
+            'data': [
+                Bar(
+                    x=top_5_name,
+                    y=top_5_count
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 5 Message Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Categories"
                 }
             }
         }
@@ -87,7 +109,7 @@ def go():
 
 
 def main():
-    app.run(host='0.0.0.0', port=3001, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=True)
 
 
 if __name__ == '__main__':

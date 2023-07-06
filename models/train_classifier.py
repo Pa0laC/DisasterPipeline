@@ -73,13 +73,8 @@ def evaluate_model(model, X_test, Y_test, category_names):
     y_pred = model.predict(X_test)
     output = {}
     for i in range(len(category_names)):
-        report= classification_report(y_pred[i], Y_test.iloc[i], output_dict=True)
-
-        precision = report['weighted avg']['precision']
-        recall = report['weighted avg']['recall']
-        f1_score = report['weighted avg']['f1-score']
-
-        output[category_names[i]] =  {'precision':precision,'recall': recall, 'f1':f1_score}
+        report= classification_report(y_pred[i], Y_test.iloc[i])
+        output[category_names[i]] =  report
     return output
 
 
