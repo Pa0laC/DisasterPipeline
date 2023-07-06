@@ -22,6 +22,8 @@ The aim of this project is to help categorize the large quantity of messages lef
 
 3. Go to http://0.0.0.0:3000/
 
+4. Screenshots of the webpage can be found at 'webpage1.jpg' and 'webpage2.jpg'.
+
 ## Results: <a name="results"></a>
 On the final webpage, two visualizations have been produced to consider the messages' distribution of genres, and the top 5 categories of messages we can find.
 We do note that our training dataset was very imbalanced which might lead to an under-representation of the minority classes in our model. This might explain why some messages are incorrectly classified.
