@@ -75,7 +75,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
     for i in range(len(category_names)):
         report= classification_report(y_pred[i], Y_test.iloc[i])
         output[category_names[i]] =  report
-    return output
+    print(output)
 
 
 def save_model(model, model_filepath):
