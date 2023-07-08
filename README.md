@@ -24,9 +24,10 @@ The structure of the repository is the following:
     
             - run.py
             
-         - templates/
+     - templates/
          
             - go.html
+            
             
             - master.html
  
@@ -54,6 +55,7 @@ The structure of the repository is the following:
             
             
     - webapp/
+    
             - webpage1.jpg
             
             - webpage2.jpg
