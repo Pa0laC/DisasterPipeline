@@ -24,12 +24,12 @@ The structure of the repository is the following:
     
             - run.py
             
-     - templates/
+         - templates/
          
-            - go.html
+                - go.html
             
             
-            - master.html
+                - master.html
  
  
     - data/
