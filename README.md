@@ -19,27 +19,45 @@ We develop an ETL and ML pipeline that will use a large training dataset to buil
 The structure of the repository is the following:
 
 - /DisasterPipeline/
+
     - app/
+    
             - run.py
-         - /templates/
+            
+         - templates/
+         
             - go.html
+            
             - master.html
  
+ 
     - data/
+    
             - DisasterResponse.db
+            
             - disaster_categories.csv
+            
             - disaster_messaged.csv
+            
             - process_data.py
 
+
     - models/
+    
             - __init__.py
+            
             - classifier.pkl
+            
             - custom_token_function.py
+            
             - train_classifier.py
+            
             
     - webapp/
             - webpage1.jpg
+            
             - webpage2.jpg
+            
             - webpage3.jpg
         
 
