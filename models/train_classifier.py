@@ -58,8 +58,8 @@ def build_model():
                          ('classifier', MultiOutputClassifier(RandomForestClassifier()))])
     
     # Grid search to optimize hyperparameters
-    parameters = parameters = {'classifier__estimator__n_estimators': [5],
-                               'classifier__estimator__max_depth': [5],}
+    parameters = parameters = {'classifier__estimator__n_estimators': [15],
+                               'classifier__estimator__max_depth': [5, None],}
 
     cv = GridSearchCV(pipeline, param_grid=parameters, cv=2)
     
@@ -68,7 +68,7 @@ def build_model():
 
 def evaluate_model(model, X_test, Y_test, category_names):
     '''
-    Evaluate the model by generating a classification report for each category
+    Evaluate the model by generating and printing a classification report for each category
     '''
     y_pred = model.predict(X_test)
     output = {}

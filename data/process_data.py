@@ -35,9 +35,6 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = categories[column].astype('int')
     
-    # The "related" column has some values equal to 2, so outside of 0,1 that should be dropped
-    categories = categories[categories.related!=2]
-    
     # drop the original categories column from `df`
     df.drop(columns=['categories'],axis=1,inplace=True)
     
@@ -46,6 +43,12 @@ def clean_data(df):
     
     # drop duplicates
     df.drop_duplicates(keep='first', inplace=True)
+    
+    # fill empty values where missing message
+    df.original=df.original.fillna('')
+    
+    # The "related" column has some values equal to 2, so outside of 0,1 that should be dropped
+    df = df[df.related!=2]
     return df
 
 
